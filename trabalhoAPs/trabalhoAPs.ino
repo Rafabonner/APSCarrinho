@@ -1,6 +1,5 @@
 #include <Ultrasonic.h>
 
-
 int pwmA = 10;
 int pwmB = 11;
 int enA = 12;
@@ -21,7 +20,6 @@ Ultrasonic ultrasonic(trigPin,echoPin); //INICIALIZANDO OS PINOS DO ARDUINO
 int distancia; //VARIÁVEL DO TIPO INTEIRO
 String result; //VARIÁVEL DO TIPO STRING
 
-
 long duration;
 int distance; 
 int leituraE;
@@ -37,12 +35,10 @@ void setup() {
   pinMode(enB, OUTPUT);
   pinMode(buz, OUTPUT);
 
-
   pinMode(sensor_esquerda, INPUT);
   pinMode(sensor_centro, INPUT);
   pinMode(sensor_direita, INPUT);
 
-  
   pinMode(trigPin, OUTPUT);  
 	pinMode(echoPin, INPUT);  
 
@@ -55,14 +51,10 @@ void setup() {
   Serial.begin(9600);
 }
 
-
-
 void AndarFrente(){
-
     //para frente
     analogWrite (pwmA, 100);
     analogWrite (pwmB, 100);
-
 }
 
 void PararMotor(){
@@ -92,22 +84,19 @@ int SensorSonic(){
 
   duration = pulseIn(echoPin, HIGH);
   distance = (duration*.0343)/2; // em cm
+  return distance;
 }
 
 void AcenderLedVermelha(){
-  digitalWrite(ledVermelho, HIGH);
+  digitalWrite(ledVermelho, LOW);
 }
 
 void DesligarLedVermelha(){
-  digitalWrite(ledVermelho, LOW);
+  digitalWrite(ledVermelho, HIGH);
 }
 
 void AcenderLedVerde(){
   digitalWrite(ledverde, HIGH);
-}
-
-void DesligarLedVerde(){
-  digitalWrite(ledverde, LOW);
 }
 
 void SensorLuz(){
@@ -117,36 +106,32 @@ void SensorLuz(){
   leituraE = digitalRead(sensor_esquerda); //preto é 1, branco é 0
 }
 
-
-
-
 void loop() {
-  DesligarLedVermelha();
-  AcenderLedVerde();
+  
+ 
  if (!inicioConcluido) { 
+    DesligarLedVermelha();
     delay(5000);// 5000 milissegundos = 5 segundos
     inicioConcluido = true;
   }
-
     SensorSonic();
     Serial.println(distance);
     SensorLuz();
+    DesligarLedVermelha();
+    AcenderLedVerde();
     if (distance <= 5) {
       AcenderLedVermelha();
-      DesligarLedVerde();
       PararMotor();
     }else{
-      //Seguir linha
-    AcenderLedVerde();  
-    DesligarLedVermelha();
+      //Seguir linha 
     SensorLuz();
-    if(leituraC == 1){
+    if(leituraC == 0){
       AndarFrente();
     }
-    if(leituraD == 1){
+    if(leituraD == 0){
       ViraMotorADireita();
     }
-    if(leituraE == 1){
+    if(leituraE == 0){
       ViraMotorBEsquerda();
     }
   }
